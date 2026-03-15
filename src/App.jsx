@@ -84,17 +84,12 @@ export default function App() {
   
   const handleLanguageSelect = (lang) => {
     gameState.setLanguage(lang);
-    // Show auth screen if Supabase is configured and user not logged in
-    if (supabase && !user) {
-      setScreen('auth');
-    } else {
-      setScreen('setup');
-    }
+    setScreen('setup');
   };
   
   const handleAuth = (authUser) => {
     setUser(authUser);
-    setScreen('setup');
+    setScreen('game');
   };
   
   const handleSkipAuth = () => {

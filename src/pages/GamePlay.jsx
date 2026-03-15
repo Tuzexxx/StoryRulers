@@ -58,20 +58,22 @@ export default function GamePlay({ gameState, speech, onNavigate }) {
         
         Guidelines:
         - ${ageContext}
-        - Story Conflict: Create a "Dilemma of the Heart" – a situation where there is no single right answer, but requires a moral choice, a compromise between two needs, or a creative act of kindness to solve. Avoid simple "yes/no" tasks.
-        - Character Persistence: If appropriate, bring back a character from the "Known Characters" list. If creating a new one, give them a distinct personality that can return later.
-        - Relationship Logic: If multiple characters are in the registry, consider a problem where they must interact or collaborate.
-
+        - Story Conflict: Create a "Dilemma of the Heart" – a situation requiring moral choice, compromise, or creative kindness.
+        - Emotional Intelligence (EQ): Describe exactly how the petitioner feels and why.
+        - Character Persistence: Use "Known Characters" if fitting.
+        
         Create a new petitioner from the ${themeName} theme.
         
         Return STRICT JSON:
         {
           "name": "Character name (in ${t.code})",
-          "emoji": "single fitting emoji",
+          "emoji": "single character emoji",
+          "emotionEmoji": "single emotion emoji (e.g. 😢, 😡, 😨)",
+          "emotionText": "How they feel (max 1 sentence, in ${t.code})",
           "story": "The conflict/dilemma (max 3 sentences, in ${t.code})",
-          "request": "The specific question/choice for the rulers (in ${t.code})",
-          "discussion": "A question for parents to help kids think about the moral/social side of the decision (in ${t.code})",
-          "isReturning": boolean (true if from registry)
+          "request": "The specific choice for the rulers (in ${t.code})",
+          "discussion": "A question for parents about the moral/social side (in ${t.code})",
+          "isReturning": boolean
         }
       `;
       
@@ -109,17 +111,19 @@ export default function GamePlay({ gameState, speech, onNavigate }) {
         theme: gameState.theme
       });
       
-      // Generate chronicle entry
+      // Generate chronicle entry + Virtue evaluation
       const publicPrompt = `
-        Process this resolved case for a public illustrated chronicle.
+        Process this case for a public chronicle and evaluate the rulers' virtue.
         Case: ${pet.name} — ${pet.story}
         Decision: ${decisionText}
         
         Return STRICT JSON:
         {
-          "title": "Short witty title (max 5 words, in ${t.code})",
-          "description": "One sentence about what the rulers decided and how it turned out (in ${t.code})",
-          "imagePromptEn": "English prompt for an AI image generator describing the happy ending of this fairy tale situation. Include 'children storybook illustration style, colorful, cheerful'. Theme: ${gameState.theme}."
+          "title": "Short title (in ${t.code})",
+          "description": "One sentence result (in ${t.code})",
+          "reflection": "A gentle follow-up question for the narrator to ask the kids about their choice (in ${t.code})",
+          "virtue": "Which kingdom virtue was shown? (Kindness, Bravery, Wisdom, or Fairness)",
+          "imagePromptEn": "English prompt for storybook illustration style, colorful. Theme: ${gameState.theme}."
         }
       `;
       
@@ -142,7 +146,7 @@ export default function GamePlay({ gameState, speech, onNavigate }) {
         .catch(() => gameState.updateChronicleImage(entryIndex, null));
       
       // Feedback and next case
-      const feedback = pubData.description;
+      const feedback = `${pubData.description} ${pubData.reflection}`;
       setNarratorText(feedback);
       speech.speak(feedback, () => {
         generateNextCase();
@@ -172,8 +176,18 @@ export default function GamePlay({ gameState, speech, onNavigate }) {
         <div className="nav-title">
           {themeData.emoji} {t.appTitle}
         </div>
-        <div className="nav-actions">
-          <button
+          <div className="nav-actions">
+            {!gameState.userId && (
+              <button 
+                className="nav-btn btn-cloud-save" 
+                onClick={() => onNavigate('auth')}
+                id="nav-save"
+                title="Save to Cloud"
+              >
+                ☁️ Save
+              </button>
+            )}
+            <button
             className="nav-btn"
             onClick={() => { speech.stopSpeaking(); onNavigate('chronicle'); }}
             id="nav-chronicle"
@@ -225,12 +239,20 @@ export default function GamePlay({ gameState, speech, onNavigate }) {
             <div className="petitioner-header">
               <span className="petitioner-emoji">{pet.emoji}</span>
               <div>
-                <h3 className="petitioner-name">{pet.name}</h3>
+                <h3 className="petitioner-name">
+                  {pet.name} {pet.emotionEmoji}
+                </h3>
                 <span className="petitioner-badge">{t.newRequest}</span>
               </div>
             </div>
             
             <div className="petitioner-body">
+              {/* Emotion */}
+              {pet.emotionText && (
+                <div className="emotion-box">
+                  <span className="emotion-label">Feeling:</span> {pet.emotionText}
+                </div>
+              )}
               {/* Problem */}
               <div className="problem-box">
                 <div className="problem-label">{t.problemLabel}</div>
