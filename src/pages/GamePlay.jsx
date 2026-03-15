@@ -71,7 +71,8 @@ export default function GamePlay({ gameState, speech, onNavigate }) {
           "emotionEmoji": "emotion emoji (how they feel about the event)",
           "emotionText": "Why they feel this way (max 1 sentence, in ${t.code})",
           "story": "The event/plot (2-3 sentences max, in ${t.code})",
-          "request": "The specific question for the rulers (in ${t.code})",
+          "proposedFix": "The character's own biased/selfish/hasty 'quick fix' (1 sentence, in ${t.code})",
+          "request": "A question asking the rulers to approve their fix or find a better one (in ${t.code})",
           "discussion": "A curious question for parents to discuss the plot (in ${t.code})",
           "isReturning": boolean
         }
@@ -248,7 +249,28 @@ export default function GamePlay({ gameState, speech, onNavigate }) {
               {/* Problem */}
               <div className="problem-box">
                 <div className="problem-label">{t.problemLabel}</div>
-                <p className="problem-text">{pet.story} {pet.request}</p>
+                <p className="problem-text">{pet.story}</p>
+              </div>
+
+              {/* Proposed Quick Fix */}
+              {pet.proposedFix && (
+                <div className="glass-card-static" style={{ 
+                  marginTop: 'var(--space-md)', 
+                  padding: 'var(--space-md)',
+                  background: 'rgba(var(--accent-primary-rgb), 0.05)',
+                  borderLeft: '4px solid var(--accent-primary)',
+                  fontStyle: 'italic',
+                  fontSize: '0.9rem'
+                }}>
+                  <strong style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '4px', opacity: 0.7 }}>
+                    💡 {t.proposedFixLabel}
+                  </strong>
+                  "{pet.proposedFix}"
+                </div>
+              )}
+              
+              <div style={{ marginTop: 'var(--space-lg)' }}>
+                <p className="problem-text" style={{ fontWeight: 600 }}>{pet.request}</p>
               </div>
               
               {/* Parent Hint */}

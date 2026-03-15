@@ -53,6 +53,9 @@ const translations = {
     chronicle: 'Chronicle',
     settings: 'Settings',
     
+    // Character fix
+    proposedFixLabel: 'Navrhované řešení',
+    
     // Settings
     settingsTitle: 'Settings',
     apiKeyLabel: 'Gemini API Key',
