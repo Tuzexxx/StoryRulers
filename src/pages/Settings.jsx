@@ -6,17 +6,8 @@ import { signOut, supabase } from '../api/supabase';
 /**
  * Settings page: API key, account, language change, clear data
  */
-export default function Settings({ gameState, onBack, onChangeLang, user }) {
-  const [key, setKey] = useState(getApiKey());
-  const [saved, setSaved] = useState(false);
-  
+export default function Settings({ gameState, onBack, onNavigate, onChangeLang, user }) {
   const t = translations[gameState.language] || translations.en;
-  
-  const handleSaveKey = () => {
-    setApiKey(key);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  };
   
   const handleClearData = () => {
     if (window.confirm(t.clearConfirm)) {
@@ -29,7 +20,14 @@ export default function Settings({ gameState, onBack, onChangeLang, user }) {
     await signOut();
     window.location.reload();
   };
+
+  const handleThemeChange = (themeKey) => {
+    gameState.setTheme(themeKey);
+    document.documentElement.setAttribute('data-theme', themeKey);
+  };
   
+  const themeKeys = ['royal', 'space', 'wizard', 'underwater', 'forest'];
+
   return (
     <>
       <nav className="top-nav">
@@ -64,7 +62,7 @@ export default function Settings({ gameState, onBack, onChangeLang, user }) {
                     <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>
                       Playing without an account.
                     </p>
-                    <button className="btn btn-primary" onClick={() => onBack() || window.dispatchEvent(new CustomEvent('nav-auth'))} style={{ fontSize: '0.85rem' }}>
+                    <button className="btn btn-primary" onClick={() => onNavigate('auth')} style={{ fontSize: '0.85rem' }}>
                       Sign In to Save
                     </button>
                   </div>
@@ -72,32 +70,28 @@ export default function Settings({ gameState, onBack, onChangeLang, user }) {
               </div>
             </div>
           )}
-          
-          {/* API Key */}
+
+          {/* World Switcher */}
           <div className="glass-card-static animate-fade-in" style={{ padding: 'var(--space-xl)', marginBottom: 'var(--space-xl)', animationDelay: '0.05s' }}>
             <div className="settings-section">
-              <label className="settings-label">🔑 {t.apiKeyLabel}</label>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: 'var(--space-md)' }}>
-                Get your free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-primary)' }}>aistudio.google.com/apikey</a>
-              </p>
-              <input
-                type="password"
-                value={key}
-                onChange={(e) => setKey(e.target.value)}
-                placeholder={t.apiKeyPlaceholder}
-                className="input-field"
-                style={{ marginBottom: 'var(--space-md)' }}
-                id="api-key-input"
-              />
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}>
-                <button className="btn btn-primary" onClick={handleSaveKey} id="save-key" style={{ fontSize: '0.95rem' }}>
-                  {t.saveKey}
-                </button>
-                {saved && (
-                  <span className="animate-fade-in" style={{ color: '#4ade80', fontWeight: 600 }}>
-                    ✓ {t.apiKeySaved}
-                  </span>
-                )}
+              <label className="settings-label">🌍 Change World</label>
+              <div className="theme-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', marginTop: 'var(--space-md)' }}>
+                {themeKeys.map((key) => {
+                  const theme = THEMES[key];
+                  const themeNameKey = `theme${key.charAt(0).toUpperCase() + key.slice(1)}`;
+                  const isSelected = gameState.theme === key;
+                  return (
+                    <button
+                      key={key}
+                      className={`glass-card theme-card ${isSelected ? 'selected' : ''}`}
+                      onClick={() => handleThemeChange(key)}
+                      style={{ padding: 'var(--space-md) var(--space-xs)' }}
+                    >
+                      <span className="theme-emoji" style={{ fontSize: '1.5rem' }}>{theme.emoji}</span>
+                      <span className="theme-name" style={{ fontSize: '0.8rem' }}>{t[themeNameKey]}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
