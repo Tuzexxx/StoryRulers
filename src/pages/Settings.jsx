@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import translations from '../i18n/translations';
+import translations, { THEMES } from '../i18n/translations';
 import { getApiKey, setApiKey } from '../api/gemini';
 import { signOut, supabase } from '../api/supabase';
 
 /**
- * Settings page: API key, account, language change, clear data
+ * Settings page: World switching, account, language change, clear data
  */
 export default function Settings({ gameState, onBack, onNavigate, onChangeLang, user }) {
   const t = translations[gameState.language] || translations.en;
