@@ -32,6 +32,15 @@ export default function Settings({ gameState, onBack, onNavigate, onChangeLang, 
       <nav className="top-nav">
         <div className="nav-title">⚙️ {t.settingsTitle}</div>
         <div className="nav-actions">
+          {!user && (
+            <button 
+              className="nav-btn btn-cloud-save" 
+              onClick={() => onNavigate('auth')}
+              style={{ marginRight: 'var(--space-md)' }}
+            >
+              ☁️ Save to Cloud
+            </button>
+          )}
           <button className="nav-btn" onClick={onBack} id="settings-back">
             ← {t.back}
           </button>
