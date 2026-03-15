@@ -43,7 +43,23 @@ npm run dev
 ## Tech Stack
 
 - **Frontend**: React 19 + Vite 6
-- **AI**: Gemini 3.1 Flash Lite (stories) + Gemini 3.1 Flash Image (illustrations)
-- **Voice**: Web Speech API (TTS + recognition)
 - **Auth & Data**: Supabase (optional)
 - **Hosting**: Vercel with serverless API proxy
+
+## AI Models & Prompts
+
+StoryRulers uses Google Gemini AI for its brain and eyes. Here is the technical breakdown:
+
+### Models Used
+- **Text & JSON**: `gemini-3.1-flash-lite-preview` (Used for generating petitioners, stories, and chronicle entries)
+- **Images**: `gemini-3.1-flash-image-preview` (Used for creating the storybook illustrations in the Chronicle)
+
+### Prompt Logic
+The app sends structured prompts wrapped in specific **System Instructions**:
+1. **Storyteller Role**: "You are a master fairy-tale storyteller for children. Create fun, creative, non-violent stories."
+2. **Contextual Data**: Every prompt includes:
+   - ✨ **Theme**: Current world (e.g., Space Station, Wizard Academy)
+   - 🎂 **Age context**: Stories are simplified for ages 0-5, 6-8, or 9+.
+   - 🧠 **World Memory**: A brief summary of previous cases so the AI remembers past events.
+3. **Structured Output**: Information is returned as JSON to ensure the app can display names, emojis, and story parts separately.
+4. **Image Generation**: Descriptions are translated into visual prompts like "children storybook illustration style, colorful, cheerful" with the specific story ending.
