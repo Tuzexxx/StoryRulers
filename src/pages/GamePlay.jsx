@@ -58,9 +58,9 @@ export default function GamePlay({ gameState, speech, onNavigate }) {
         
         Guidelines:
         - ${ageContext}
-        - Story Conflict: Create a "Dilemma of the Heart" – a situation requiring moral choice, compromise, or creative kindness.
-        - Emotional Intelligence (EQ): Describe exactly how the petitioner feels and why.
-        - Character Persistence: Use "Known Characters" if fitting.
+        - Perspective: First-Person Complaint. The character arrives because something interesting happened TO them (e.g., "A giant sneezed on my haystacks!", "My magical boots won't stop dancing!").
+        - Plot-First: Focus on a fun, weird, or funny world event. Don't worry about being "educational" – let the situation speak for itself.
+        - Plot Twist: If fitting, add a tiny surprising detail about the situation.
         
         Create a new petitioner from the ${themeName} theme.
         
@@ -68,11 +68,11 @@ export default function GamePlay({ gameState, speech, onNavigate }) {
         {
           "name": "Character name (in ${t.code})",
           "emoji": "single character emoji",
-          "emotionEmoji": "single emotion emoji (e.g. 😢, 😡, 😨)",
-          "emotionText": "How they feel (max 1 sentence, in ${t.code})",
-          "story": "The conflict/dilemma (max 3 sentences, in ${t.code})",
-          "request": "The specific choice for the rulers (in ${t.code})",
-          "discussion": "A question for parents about the moral/social side (in ${t.code})",
+          "emotionEmoji": "emotion emoji (how they feel about the event)",
+          "emotionText": "Why they feel this way (max 1 sentence, in ${t.code})",
+          "story": "The event/plot (2-3 sentences max, in ${t.code})",
+          "request": "The specific question for the rulers (in ${t.code})",
+          "discussion": "A curious question for parents to discuss the plot (in ${t.code})",
           "isReturning": boolean
         }
       `;
@@ -113,17 +113,17 @@ export default function GamePlay({ gameState, speech, onNavigate }) {
       
       // Generate chronicle entry + Virtue evaluation
       const publicPrompt = `
-        Process this case for a public chronicle and evaluate the rulers' virtue.
+        Record this interesting event in the public chronicle.
         Case: ${pet.name} — ${pet.story}
-        Decision: ${decisionText}
+        Rulers' Action: ${decisionText}
         
         Return STRICT JSON:
         {
-          "title": "Short title (in ${t.code})",
-          "description": "One sentence result (in ${t.code})",
-          "reflection": "A gentle follow-up question for the narrator to ask the kids about their choice (in ${t.code})",
-          "virtue": "Which kingdom virtue was shown? (Kindness, Bravery, Wisdom, or Fairness)",
-          "imagePromptEn": "English prompt for storybook illustration style, colorful. Theme: ${gameState.theme}."
+          "title": "Fun headline (in ${t.code}, e.g., 'The Case of the Dancing Boots')",
+          "description": "One sentence about the outcome (in ${t.code})",
+          "reflection": "A curious 'Plot Reflection' question about the situation (in ${t.code})",
+          "virtue": "The dominant virtue shown (Kindness, Bravery, Wisdom, or Fairness)",
+          "imagePromptEn": "Detailed storybook illustration, colorful, showing the funny scene. Theme: ${gameState.theme}."
         }
       `;
       
