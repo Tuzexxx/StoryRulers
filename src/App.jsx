@@ -89,11 +89,19 @@ export default function App() {
   
   const handleAuth = (authUser) => {
     setUser(authUser);
-    setScreen('game');
+    if (gameState.setupComplete) {
+      setScreen('game');
+    } else {
+      setScreen('setup');
+    }
   };
   
   const handleSkipAuth = () => {
-    setScreen('setup');
+    if (gameState.setupComplete) {
+      setScreen('game');
+    } else {
+      setScreen('setup');
+    }
   };
   
   const handleSetupComplete = () => {

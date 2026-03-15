@@ -60,9 +60,14 @@ export default function Settings({ gameState, onBack, onChangeLang, user }) {
                     </button>
                   </div>
                 ) : (
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-                    Playing without an account. Your data is saved locally only.
-                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)', flexWrap: 'wrap' }}>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>
+                      Playing without an account.
+                    </p>
+                    <button className="btn btn-primary" onClick={() => onBack() || window.dispatchEvent(new CustomEvent('nav-auth'))} style={{ fontSize: '0.85rem' }}>
+                      Sign In to Save
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
