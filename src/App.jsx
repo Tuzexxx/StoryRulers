@@ -176,6 +176,7 @@ export default function App() {
         <Settings
           gameState={gameState}
           onBack={() => setScreen('game')}
+          onNavigate={handleNavigate}
           onChangeLang={handleChangeLang}
           user={user}
         />

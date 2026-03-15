@@ -225,14 +225,6 @@ export default function GamePlay({ gameState, speech, onNavigate }) {
           </div>
         )}
         
-        {/* Narrator Bubble */}
-        {narratorText && !isLoading && (
-          <div className="narrator-bubble" style={{ marginBottom: 'var(--space-xl)' }}>
-            <span className="narrator-emoji">{themeData.narrator}</span>
-            <p className="narrator-text">"{narratorText}"</p>
-          </div>
-        )}
-        
         {/* Petitioner Card */}
         {pet && !isLoading && (
           <div className="glass-card-static petitioner-card">
