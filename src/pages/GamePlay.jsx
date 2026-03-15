@@ -38,28 +38,40 @@ export default function GamePlay({ gameState, speech, onNavigate }) {
     try {
       const memoryString = (gameState.worldMemory || []).join(' | ');
       const themeName = t[themeNameKey] || 'Royal Court';
+      const characters = JSON.stringify(gameState.characterRegistry);
       
-      const ageContext = gameState.youngestAge <= 5
-        ? 'Use very simple words, short sentences, and very silly problems. The story should be extremely easy to understand for a small child.'
+      const ageContext = gameState.youngestAge <= 3
+        ? 'Age 2-3: Use sensory words, simple sounds, bright colors, and physical slapstick humor. Very short sentences.'
+        : gameState.youngestAge <= 4
+        ? 'Age 4: Simple story logic, basic emotions (happy/sad), repetitive elements, and magical/whimsical results.'
+        : gameState.youngestAge <= 6
+        ? 'Age 5-6: Concrete social dilemmas (sharing, kindness, bravery). Characters should be very clear in their motivations.'
         : gameState.youngestAge <= 8
-        ? 'Use simple language and fun, silly problems. Keep sentences short and engaging.'
-        : 'Use creative and slightly more complex scenarios, but keep it fun and appropriate for children.';
+        ? 'Age 7-8: Focus on fairness, empathy, and the immediate consequences of choices. Minor moral dilemmas.'
+        : 'Age 9+: Complex narratives, moral ambiguity, strategic thinking, and long-term kingdom-wide impact.';
       
       const prompt = `
-        Game setting: ${themeName} (theme: ${gameState.theme}).
-        Current kingdom state: ${memoryString || 'Fresh start, no previous cases'}.
-        Youngest player age: ${gameState.youngestAge}. ${ageContext}
+        Game Setting: ${themeName} (theme: ${gameState.theme}).
+        World Memory: ${memoryString || 'Fresh start'}.
+        Known Characters: ${characters}.
+        Youngest Player Age: ${gameState.youngestAge}. 
         
-        Create a new, funny petitioner (a fairy-tale creature, magical being, or animal fitting the ${themeName} theme) who comes to the rulers with a problem.
-        The problem should be creative, non-violent, and humorous.
+        Guidelines:
+        - ${ageContext}
+        - Story Conflict: Create a "Dilemma of the Heart" – a situation where there is no single right answer, but requires a moral choice, a compromise between two needs, or a creative act of kindness to solve. Avoid simple "yes/no" tasks.
+        - Character Persistence: If appropriate, bring back a character from the "Known Characters" list. If creating a new one, give them a distinct personality that can return later.
+        - Relationship Logic: If multiple characters are in the registry, consider a problem where they must interact or collaborate.
+
+        Create a new petitioner from the ${themeName} theme.
         
         Return STRICT JSON:
         {
           "name": "Character name (in ${t.code})",
           "emoji": "single fitting emoji",
-          "story": "Short problem description (max 3 sentences, in ${t.code})",
-          "request": "What exactly they ask the rulers to do (in ${t.code})",
-          "discussion": "One brief discussion question for parents to ask kids (in ${t.code})"
+          "story": "The conflict/dilemma (max 3 sentences, in ${t.code})",
+          "request": "The specific question/choice for the rulers (in ${t.code})",
+          "discussion": "A question for parents to help kids think about the moral/social side of the decision (in ${t.code})",
+          "isReturning": boolean (true if from registry)
         }
       `;
       
@@ -91,6 +103,11 @@ export default function GamePlay({ gameState, speech, onNavigate }) {
       const memoryEntry = `Case: ${pet.name}. Rulers decided: ${decisionText}.`;
       
       gameState.addWorldMemory(memoryEntry);
+      gameState.upsertCharacter(pet.name, {
+        emoji: pet.emoji,
+        lastInteraction: decisionText,
+        theme: gameState.theme
+      });
       
       // Generate chronicle entry
       const publicPrompt = `

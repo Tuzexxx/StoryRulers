@@ -59,7 +59,8 @@ The app sends structured prompts wrapped in specific **System Instructions**:
 1. **Storyteller Role**: "You are a master fairy-tale storyteller for children. Create fun, creative, non-violent stories."
 2. **Contextual Data**: Every prompt includes:
    - ✨ **Theme**: Current world (e.g., Space Station, Wizard Academy)
-   - 🎂 **Age context**: Stories are simplified for ages 0-5, 6-8, or 9+.
-   - 🧠 **World Memory**: A brief summary of previous cases so the AI remembers past events.
+   - 🎂 **Age context**: Stories are split into 5 granular clusters (2-3, 4, 5-6, 7-8, 9+) with specific developmental instructions.
+   - 🧠 **Dynamic Memory**: Includes a **Character Registry** so past petitioners return and remember previous interactions.
+   - ⚖️ **Moral Dilemmas**: Prompts explicitly request "Dilemmas of the Heart" to teach compromise, fairness, and creative kindness.
 3. **Structured Output**: Information is returned as JSON to ensure the app can display names, emojis, and story parts separately.
 4. **Image Generation**: Descriptions are translated into visual prompts like "children storybook illustration style, colorful, cheerful" with the specific story ending.

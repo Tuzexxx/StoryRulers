@@ -60,6 +60,7 @@ export const saveGameState = async (userId, gameData) => {
       youngest_age: gameData.youngestAge,
       players_context: gameData.playersContext,
       world_memory: gameData.worldMemory,
+      character_registry: gameData.characterRegistry,
       public_chronicle: gameData.publicChronicle,
       updated_at: new Date().toISOString(),
     }, { onConflict: 'user_id' });
@@ -87,6 +88,7 @@ export const loadGameState = async (userId) => {
     youngestAge: data.youngest_age,
     playersContext: data.players_context,
     worldMemory: data.world_memory || [],
+    characterRegistry: data.character_registry || {},
     publicChronicle: data.public_chronicle || [],
     setupComplete: !!data.players_context,
   };

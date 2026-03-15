@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS game_saves (
   youngest_age INTEGER DEFAULT 6,
   players_context TEXT,
   world_memory JSONB DEFAULT '[]'::jsonb,
+  character_registry JSONB DEFAULT '{}'::jsonb,
   public_chronicle JSONB DEFAULT '[]'::jsonb,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()

@@ -8,6 +8,7 @@ const defaultState = {
   youngestAge: 6,
   playersContext: '',
   worldMemory: [],
+  characterRegistry: {}, // { name: { emoji, history, relationship } }
   publicChronicle: [],
   currentPetitioner: null,
   setupComplete: false,
@@ -99,6 +100,23 @@ export function useGameState() {
     setState(prev => ({ ...prev, worldMemory: memory }));
   }, []);
   
+  const upsertCharacter = useCallback((name, data) => {
+    setState(prev => {
+      const existing = prev.characterRegistry[name] || {};
+      return {
+        ...prev,
+        characterRegistry: {
+          ...prev.characterRegistry,
+          [name]: { ...existing, ...data }
+        }
+      };
+    });
+  }, []);
+
+  const setCharacterRegistryDirect = useCallback((registry) => {
+    setState(prev => ({ ...prev, characterRegistry: registry }));
+  }, []);
+  
   return {
     ...state,
     setLanguage,
@@ -112,5 +130,7 @@ export function useGameState() {
     markSetupComplete,
     resetGame,
     setWorldMemoryDirect,
+    upsertCharacter,
+    setCharacterRegistryDirect,
   };
 }
